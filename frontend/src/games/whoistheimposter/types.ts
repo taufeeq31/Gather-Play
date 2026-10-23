@@ -11,4 +11,6 @@ export type GameState = {
 	players: Player[];
 	secretWord: string;
 	votes: Record<string, string>;
+	discussionSeconds: number;
+	category: string;
 };

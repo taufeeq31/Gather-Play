@@ -11,7 +11,7 @@ export const games: Game[] = [
 		name: 'Who Is the Imposter?',
 		tagline: 'Everyone gets the secret word—except the imposter. Can you spot who’s bluffing?',
 		players: '3–12 players',
-		path: '/whoisimposter',
+		path: '/whoistheimposter',
 		status: 'live',
 	},
 	{

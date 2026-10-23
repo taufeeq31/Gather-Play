@@ -69,9 +69,10 @@ export const WORDS: Record<string, string[]> = {
 	],
 };
 
-export const getRandomWord = (category: string): string => {
+export const getRandomWord = (category: string, avoidWord?: string): string => {
 	const pool =
 		category === 'random' || !WORDS[category] ? Object.values(WORDS).flat() : WORDS[category];
-
-	return pool[Math.floor(Math.random() * pool.length)];
+	const candidates = avoidWord ? pool.filter((word) => word !== avoidWord) : pool;
+	const choices = candidates.length ? candidates : pool;
+	return choices[Math.floor(Math.random() * choices.length)];
 };

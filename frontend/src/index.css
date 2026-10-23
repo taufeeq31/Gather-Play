@@ -12,11 +12,61 @@
 	--font-sans: 'Inter', sans-serif;
 	--font-heading: 'Space Grotesk', sans-serif;
 	--animate-marquee: marquee 22s linear infinite;
+	--animate-game-screen-enter: game-screen-enter 150ms ease-out;
 
 	@keyframes marquee {
 		to {
 			transform: translateX(-50%);
 		}
+	}
+
+	@keyframes game-screen-enter {
+		from {
+			transform: scale(0.98);
+			opacity: 0;
+		}
+		to {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+}
+
+.game-screen-enter {
+	animation: var(--animate-game-screen-enter);
+}
+
+.reveal-card {
+	animation: reveal-card-flip 180ms ease-out both;
+}
+
+.timer-card-urgent {
+	animation: timer-shake 180ms ease-in-out;
+}
+
+@keyframes reveal-card-flip {
+	from {
+		transform: perspective(700px) rotateY(12deg) scale(0.98);
+		opacity: 0.75;
+	}
+	to {
+		transform: perspective(700px) rotateY(0) scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes timer-shake {
+	25% { transform: translateX(-2px); }
+	50% { transform: translateX(2px); }
+	75% { transform: translateX(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal-card {
+		animation: none;
+	}
+	.timer-card-urgent {
+		animation: none;
 	}
 }
 
