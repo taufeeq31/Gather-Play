@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import HomePage from './pages/homepage.tsx';
 import WhoIsTheImposter from './games/whoistheimposter/whoistheimposter.tsx';
@@ -8,13 +8,14 @@ const imposterPath = games.find((game) => game.name === 'Who Is the Imposter?')?
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                {imposterPath ? <Route path={imposterPath} element={<WhoIsTheImposter />} /> : null}
-            </Routes>
-        </BrowserRouter>
-    );
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<HomePage />} />
+				{imposterPath ? <Route path={imposterPath} element={<WhoIsTheImposter />} /> : null}
+				<Route path="*" element={<Navigate to="/" replace />} />
+			</Routes>
+		</BrowserRouter>
+	);
 }
 
 export default App;

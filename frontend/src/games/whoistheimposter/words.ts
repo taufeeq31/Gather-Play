@@ -69,10 +69,38 @@ export const WORDS: Record<string, string[]> = {
 	],
 };
 
-export const getRandomWord = (category: string, avoidWord?: string): string => {
+const USED_KEY = 'imposter-used-words';
+
+const loadUsed = (): string[] => {
+	try {
+		return JSON.parse(sessionStorage.getItem(USED_KEY) ?? '[]');
+	} catch {
+		return [];
+	}
+};
+
+const saveUsed = (words: string[]) => {
+	try {
+		sessionStorage.setItem(USED_KEY, JSON.stringify(words));
+	} catch {
+		// storage blocked (e.g. private mode), just skip it
+	}
+};
+
+export const getRandomWord = (category: string): string => {
 	const pool =
 		category === 'random' || !WORDS[category] ? Object.values(WORDS).flat() : WORDS[category];
-	const candidates = avoidWord ? pool.filter((word) => word !== avoidWord) : pool;
-	const choices = candidates.length ? candidates : pool;
-	return choices[Math.floor(Math.random() * choices.length)];
+
+	let used = loadUsed();
+	let fresh = pool.filter((word) => !used.includes(word));
+
+	// every word in this pool was used: forget them and start over
+	if (fresh.length === 0) {
+		used = used.filter((word) => !pool.includes(word));
+		fresh = pool;
+	}
+
+	const word = fresh[Math.floor(Math.random() * fresh.length)];
+	saveUsed([...used, word]);
+	return word;
 };

@@ -20,18 +20,34 @@ const INITIAL_GAME_STATE: GameState = {
 const WhoIsTheImposter = () => {
 	const [game, setGame] = useState<GameState>(INITIAL_GAME_STATE);
 
-	const handleStart = (names: string[], imposterCount: number, category: string, discussionSeconds: number) => {
-		const players: Player[] = names.map((name) => ({
-			id: crypto.randomUUID(),
-			name,
-			isImposter: false,
-		}));
+    const makeId = () =>
+		typeof crypto !== 'undefined' && 'randomUUID' in crypto
+			? crypto.randomUUID()
+			: `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+	const handleStart = (
+        names: string[],
+        imposterCount: number,
+        category: string,
+        discussionSeconds: number) => {
 		// pick random indexes to be imposters
-		const indexes = players.map((_, i) => i).sort(() => Math.random() - 0.5);
-		indexes.slice(0, imposterCount).forEach((i) => {
-			players[i].isImposter = true;
-		});
+		const shuffledIndices = names.map((_, index) => index);
+
+		for (let i = shuffledIndices.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+
+			[shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+		}
+
+		const imposterIndices = new Set(shuffledIndices.slice(0, imposterCount));
+
+		const players: Player[] = names.map((name, index) => ({
+			id: makeId(),
+
+			name,
+
+			isImposter: imposterIndices.has(index),
+		}));
 
 		setGame({
 			phase: 'reveal',
@@ -65,7 +81,7 @@ const WhoIsTheImposter = () => {
 				...previous,
 				phase: 'reveal',
 				players,
-				secretWord: getRandomWord(previous.category, previous.secretWord),
+				secretWord: getRandomWord(previous.category, ),
 				votes: {},
 			};
 		});
