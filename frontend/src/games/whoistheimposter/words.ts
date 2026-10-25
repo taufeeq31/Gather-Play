@@ -1,3 +1,5 @@
+import { load, save } from "../../utils/storage";
+
 export const WORDS: Record<string, string[]> = {
 	animals: [
 		'Lion',
@@ -69,23 +71,14 @@ export const WORDS: Record<string, string[]> = {
 	],
 };
 
-const USED_KEY = 'imposter-used-words';
+const USED_KEY = 'gather-play:imposter:used-words';
 
 const loadUsed = (): string[] => {
-	try {
-		return JSON.parse(sessionStorage.getItem(USED_KEY) ?? '[]');
-	} catch {
-		return [];
-	}
+	const data = load<unknown>(USED_KEY, []);
+	return Array.isArray(data) ? data.filter((w): w is string => typeof w === 'string') : [];
 };
 
-const saveUsed = (words: string[]) => {
-	try {
-		sessionStorage.setItem(USED_KEY, JSON.stringify(words));
-	} catch {
-		// storage blocked (e.g. private mode), just skip it
-	}
-};
+const saveUsed = (words: string[]) => save(USED_KEY, words);
 
 export const getRandomWord = (category: string): string => {
 	const pool =
@@ -104,3 +97,5 @@ export const getRandomWord = (category: string): string => {
 	saveUsed([...used, word]);
 	return word;
 };
+
+
